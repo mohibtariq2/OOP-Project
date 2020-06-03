@@ -1,0 +1,592 @@
+class Gym:public Customer{
+	int customer_id;
+	int trainerId;
+	char trainer_name[20];
+	char hallname[20];
+	int equipment_id;
+	char equipment_name[20];
+	int exercise_plan_id;
+	int duration;
+	int subs_id;
+	string payment_date;
+	char payment_status;
+	char equipment_status;
+	string payment_time;
+	
+	
+	public:
+		
+	void show_trainer()
+	{
+		cout<<"\n"<<trainerId<<" "<<trainer_name<<endl;
+	}
+	
+	/////////// TRAINER //////////////////////////
+	void get_trainer_data()
+	{
+		cout<<"Enter Trainer's ID :"<<endl;
+		cin>>trainerId;
+		
+		cout<<"Enter Trainers Name : "<<endl;
+		cin.ignore();
+		cin.getline(trainer_name,19);
+		
+	}
+	
+		
+	void add_trainer_data()
+	{
+	// Adding a record to a file
+	get_trainer_data();// Taking Data As Input
+	ofstream fout;
+	fout.open("Trainers.txt",ios::app);
+	fout.write((char*)this,sizeof(*this));// Writing Objects to file
+	fout.close();
+	}
+	
+	void delete_trainer(int t)
+	{
+	ifstream fin;
+	ofstream fout;
+	fin.open("Trainers.txt",ios::in);
+	if(!fin)
+	{
+		cout<<"File Not Found !"<<endl;
+	}
+	else{
+		fout.open("tempTrainers.txt",ios::out);
+		fin.read((char*)this,sizeof(*this));
+		while(!fin.eof())
+		{
+			if(!(t==trainerId))
+			{
+				fout.write((char*)this,sizeof(*this));
+			}
+			fin.read((char*)this,sizeof(*this));
+			
+		}
+		fin.close();
+		fout.close();
+		remove("Trainers.txt");
+		rename("tempTrainers.txt","Trainers.txt");
+		
+	}
+	}
+	
+	void update_trainer(int tid)
+	{
+	fstream file;
+	file.open("Trainers.txt",ios::in|ios::out|ios::ate);
+	file.seekg(0);
+	file.read((char*)this,sizeof(*this));
+	while(!file.eof())
+	{
+		if(tid==trainerId)
+		{
+			get_trainer_data();
+			file.seekp(file.tellp()-sizeof(*this));
+			file.write((char*)this,sizeof(*this));
+			
+		}
+		
+		
+		file.read((char*)this,sizeof(*this));
+		
+	}
+	}
+	
+	void view_trainers()
+	{
+	ifstream fin;
+	fin.open("Trainers.txt",ios::in);
+	if(!fin)
+	{
+		cout<<"File Not Found !"<<endl;
+	}
+	
+	else{
+		fin.read((char*)this,sizeof(*this));// Reading Objects from file
+		while(!fin.eof())
+		{
+			show_trainer();
+			fin.read((char*)this,sizeof(*this));
+		}
+	fin.close();
+	}
+	}
+	
+	void choose_trainer()
+	{
+		int tid;
+		cout<<"Enter ID of the trainer you want to choose :"<<endl;
+		cin>>tid;
+		
+		cout<<"You have chosen the following Trainer :"<<endl;
+		search_trainer(tid);
+		
+		delete_trainer(tid);
+		
+		cout<<"Trainers Have Been Updated"<<endl;
+		
+		
+	}
+	
+	void search_trainer(int id)
+	{
+	int count=0;
+	ifstream fin;
+	fin.open("Trainers.txt",ios::in);
+	if(!fin)
+	{
+		cout<<"File Not Found"<<endl;
+	}
+	else{
+		fin.read((char*)this,sizeof(*this));
+		while(!fin.eof())
+		{
+			if(id==trainerId)
+			{
+				show_trainer();
+				count++;
+			}
+			fin.read((char*)this,sizeof(*this));
+		}
+		
+	    if(count==0)
+	    {
+	    	cout<<"No Record Found"<<endl;
+		}
+		fin.close();
+	}
+	}
+	
+	
+	
+	
+	///////////////// EQUIPMENT  //////////////////////////
+	
+	void show_equipments()
+	{
+		cout<<"\n"<<equipment_id<<" "<<equipment_name<<endl;
+	}
+	
+	void get_equipment_data()
+	{
+		cout<<"Enter Equipment ID :"<<endl;
+		cin>>equipment_id;
+		
+		cout<<"Enter Equipment Name :"<<endl;
+		cin.ignore();
+		cin.getline(equipment_name,19);
+	}
+	
+	void add_equipment_data()
+	{
+	// Adding a record to a file
+	get_equipment_data();// Taking Data As Input
+	ofstream fout;
+	fout.open("Equipments.txt",ios::app);
+	fout.write((char*)this,sizeof(*this));// Writing Objects to file
+	fout.close();
+	}
+	
+	void display_equipments()
+	{
+	ifstream fin;
+	fin.open("Equipments.txt",ios::in);
+	if(!fin)
+	{
+		cout<<"File Not Found !"<<endl;
+	}
+	
+	else{
+		fin.read((char*)this,sizeof(*this));// Reading Objects from file
+		while(!fin.eof())
+		{
+			show_equipments();
+			fin.read((char*)this,sizeof(*this));
+		}
+	fin.close();
+	}
+	}
+	
+	void enter_working_status()
+	{
+		
+			cout<<"Enter Equipment ID"<<endl;
+			cin>>equipment_id;
+			
+			cout<<"Enter  Status (W-Working O-Out Of Order): "<<endl;
+			cin>>equipment_status;
+			
+			ofstream fout;
+	        fout.open("EquipmentStatus.txt",ios::app);
+	        fout.write((char*)this,sizeof(*this));// Writing Objects to file
+	        fout.close();
+		
+	}
+	
+	void view_e_status()
+	{
+		cout<<"\n"<<equipment_id<<" "<<equipment_status<<endl;
+	}
+	
+	void view_equipment_status()
+	{
+	ifstream fin;
+	fin.open("EquipmentStatus.txt",ios::in);
+	if(!fin)
+	{
+		cout<<"File Not Found !"<<endl;
+	}
+	
+	else{
+		fin.read((char*)this,sizeof(*this));// Reading Objects from file
+		while(!fin.eof())
+		{
+			view_e_status();
+			fin.read((char*)this,sizeof(*this));
+		}
+	fin.close();
+	}
+	}
+	
+	
+	
+	////////////// EXERCISE PLANS /////////////////////////////////
+	void get_plan_data()
+	{
+		cout<<"Enter Exercise Plan ID :"<<endl;
+		cin>>exercise_plan_id;
+		
+		cout<<"Enter Trainer ID "<<endl;
+		cin>>trainerId;
+		
+		cout<<"Enter Equipment ID :"<<endl;
+		cin>>equipment_id;
+		
+		cout<<"Enter Duration of exercise :"<<endl;
+		cin>>duration;
+	}
+	
+	void add_exercise_plan()
+	{
+	// Adding a record to a file
+	get_plan_data();// Taking Data As Input
+	ofstream fout;
+	fout.open("Plans.txt",ios::app);
+	fout.write((char*)this,sizeof(*this));// Writing Objects to file
+	fout.close();
+	}
+	
+	
+	
+	void delete_plan(int i)
+	{
+		//Deleting A record
+	ifstream fin;
+	ofstream fout;
+	fin.open("Plans.txt",ios::in);
+	if(!fin)
+	{
+		cout<<"File Not Found !"<<endl;
+	}
+	else{
+		fout.open("tempPlans.txt",ios::out);
+		fin.read((char*)this,sizeof(*this));
+		while(!fin.eof())
+		{
+			if(!(i==exercise_plan_id))
+			{
+				fout.write((char*)this,sizeof(*this));
+			}
+			fin.read((char*)this,sizeof(*this));
+			
+		}
+		fin.close();
+		fout.close();
+		remove("Plans.txt");
+		rename("tempPlans.txt","Plans.txt");
+		
+	}
+	}
+	
+	void choose_plan()
+	{
+		int choice;
+		int nid;
+		char estatus;
+		cout<<"Enter Exercise Plan ID you want to choose "<<endl;
+		cin>>nid;
+		
+	int count=0;
+	ifstream fin;
+	fin.open("Plans.txt",ios::in);
+	if(!fin)
+	{
+		cout<<"File Not Found"<<endl;
+	}
+	else{
+		fin.read((char*)this,sizeof(*this));
+		while(!fin.eof())
+		{
+			if(nid==exercise_plan_id)
+			{
+				showPlanData();
+				count++;
+			}
+			fin.read((char*)this,sizeof(*this));
+		}
+		
+	    if(count==0)
+	    {
+	    	cout<<"No Record Found"<<endl;
+		}
+		fin.close();
+	}
+		
+		if(count>0)
+		{
+		
+		ifstream fin;
+		fin.open("EquipmentStatus.txt",ios::in);
+		estatus=equipment_status;
+		
+		if (estatus=='O')
+		{
+			cout<<"Sorry The Chosen Machine is out of order !"<<endl;
+		}
+	}
+		delete_plan(nid);
+		
+		cout<<"Plans Have been updated"<<endl;
+		
+}
+
+void showPlanData()
+	{
+		cout<<"\n"<<exercise_plan_id<<" "<<trainerId<<" "<<equipment_id<<" "<<duration<<endl;
+	}
+	
+	void exercise_plan()
+	{
+	cout<<"These Are The Available Exercise Plans :"<<endl;
+	
+	cout<<"Plan ID ***** Trainer ID ***** Equipment ID **** Duration Of Exercise"<<endl;
+		
+	ifstream fin;
+	fin.open("Plans.txt",ios::in);
+	if(!fin)
+	{
+		cout<<"File Not Found !"<<endl;
+		
+	}
+	
+	else{
+		fin.read((char*)this,sizeof(*this));// Reading Objects from file
+		while(!fin.eof())
+		{
+			showPlanData();
+			fin.read((char*)this,sizeof(*this));
+		}
+	fin.close();
+	}
+	}
+	
+	
+	///////////////// MEMBER SUBSCRIPTIONS //////////////////////////////////
+
+    void get_subscription_details()
+    {
+    	
+    	cout<<"Enter Subscription ID :"<<endl;
+    	cin>>subs_id;
+    	
+    	cout<<"Enter Date of Payment (DAY/MONTH/YEAR):"<<endl;
+    	cin>>payment_date;
+    	
+    	cout<<"Enter Time Of Payment (HH:MM):"<<endl;
+    	cin>>payment_time;
+    	
+    	cout<<"Enter Customer ID :"<<endl;
+    	cin>>Customer_id;
+    	
+    	cout<<"Enter Status of Payment (Paid-P Unpaid-N)"<<endl;
+    	cin>>payment_status;
+    	
+    }
+    
+    void store_subscriptions()
+    {
+    get_subscription_details();
+    ofstream fout;
+	fout.open("Subscriptions.txt",ios::app);
+	fout.write((char*)this,sizeof(*this));// Writing Objects to file
+	fout.close();
+	}
+
+    void check_subscription()
+    {
+    	int cid;
+    	char status;
+    	cout<<"Enter The Customer ID to check :"<<endl;
+    	cin>>cid;
+    	
+    	ifstream fin;
+    	fin.open("Subscriptions.txt",ios::in);
+    	
+    	if(cid=Customer_id)
+    	{
+    		status=payment_status;
+    		if(status=='P')
+    		{
+    			cout<<"Allow Member to enter - Payment Already Done"<<endl;
+			}
+			
+			else if(status=='N')
+			{
+				cout<<"Donot Allow Member-Payment Not Done"<<endl;
+			}
+		}
+		
+		else{
+			cout<<"No Matching Customer Found "<<endl;
+		}
+    	
+    	
+	}
+	
+	
+	
+	
+};
+
+
+
+int main()
+{
+	
+	Gym g1;
+	int choice;
+	int tid;
+	do{
+	cout<<"1.Add a trainer"<<endl;
+	cout<<"2.Delete a trainer"<<endl;
+	cout<<"3.Update A Trainer"<<endl;
+	cout<<"4.Display All trainers records"<<endl;
+	cout<<"5.Add Equipment "<<endl;
+	cout<<"6.Display All Equipments"<<endl;
+	cout<<"7.View Working Status of each equipment"<<endl;
+	cout<<"8.Update Working Status of Equipment"<<endl;
+	cout<<"9.Add Exercise Plan "<<endl;
+	cout<<"10.Choose An Exercise Plan"<<endl;
+	cout<<"11.Select A Personal Trainer "<<endl;
+	cout<<"12.View Available Trainers "<<endl;
+	cout<<"13.View Monthly Invoice "<<endl;
+	cout<<"14.Search a Member "<<endl;
+	cout<<"15.Delete a Member"<<endl;
+	cout<<"16.Update Member Record"<<endl;
+	cout<<"17.View All Members :"<<endl;
+	cout<<"18.Enter / Add New Subscription "<<endl;
+	cout<<"19.Check Subscription Details Of a Member"<<endl;
+	cout<<"20.Exit"<<endl;
+	cin>>choice;
+	
+	switch(choice){
+		
+		case 1:
+			{
+				g1.add_trainer_data();
+				break;
+			}
+			
+		case 2:
+			{
+				cout<<"Enter ID of the Trainer you want to delete "<<endl;
+				cin>>tid;
+				g1.delete_trainer(tid);
+				break;
+			}
+			
+		case 3:
+			{
+				cout<<"Enter ID of the Trainer you want to update "<<endl;
+				cin>>tid;
+				g1.update_trainer(tid);
+				break;
+			}
+			
+		case 4:
+			{
+				cout<<"Trainer ID ******** Trainer Name"<<endl;
+				g1.view_trainers();
+				break;
+			}
+			
+		case 5:
+			{
+				g1.add_equipment_data();
+				break;
+			}
+		
+		case 6:
+			{
+				g1.display_equipments();
+				break;
+			}
+		 case 7:
+		 	{
+		 		g1.view_equipment_status();
+		 		break;
+			}
+			
+		case 8:
+			{
+				g1.enter_working_status();
+				break;
+			}
+		case 9:
+			{
+				g1.add_exercise_plan();
+				break;
+			}
+			
+		case 10:
+			{
+				g1.exercise_plan();
+				g1.choose_plan();
+				break;
+			}
+			
+		case 11:
+			{
+				g1.view_trainers();
+				g1.choose_trainer();
+				break;
+			}
+			
+		case 12:
+			{
+				g1.view_trainers();
+				break;
+			}
+		case 18:
+			{
+				g1.store_subscriptions();
+				break;
+			}
+		case 19:
+			{
+				g1.check_subscription();
+				break;
+			}
+	}
+	
+	
+	
+}while(choice!=20);
+	
+	
+	
+	
+}
