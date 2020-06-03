@@ -1,3 +1,925 @@
+#include<iostream>
+#include<conio.h>
+#include<stdio.h>
+#include<fstream>
+#include<iostream>
+#include<stdlib.h>
+#include<string.h>
+using namespace std;
+
+class Customer
+{
+	protected:
+		char name [50];
+        long int  cnic;
+  		long long phone_num;
+  		char address[100];
+  		char gender;
+  		int Customer_ID;
+  		int Subscription_ID;
+  		char email[100];
+  		
+  	public:
+  		void InputData();
+  		void showData();
+  	    void DisplayCustomer();
+  	    void Add();
+        void deleteRecord(int i);
+  		int search(long int i);
+  		void updateRecord(int i);
+  		int TotalRecords();
+			
+};
+  		
+  		
+void Customer:: InputData()
+  		{
+  			cout << "*** E N T E R   D E T A I L S ***" << endl;
+  			cout << "Enter customer name: ";
+  			cin.ignore();
+  			cin.getline(name,49);
+  			cout << endl;
+  			cout << "Cnic Number: ";
+  			cin >> cnic;
+  			cout << endl;
+  			cout << "Phone number: ";
+  			cin >> phone_num;
+  			cout << endl;
+  			cout << "Address: ";
+  			cin.ignore();
+  			cin.getline(address,99);
+  			cout << endl;
+  			cout << "Enter gender M or F: ";
+  			cin >> gender;
+  			cout << endl;
+  			cout << "Customer ID: ";
+  			cin >> Customer_ID;
+  			cout << endl;
+  			cout << "Subscription ID: ";
+  			cin >>  Subscription_ID;
+  			cout << endl;
+  			cout << "Email Address: ";
+  			cin.ignore();
+  			cin.getline(email,99);
+  			cout << endl;	
+		  }
+		  
+//show data
+void Customer::showData()
+		  {
+		  	cout << "Name: " << name << endl;
+		  	cout << "Cnic Number: " << cnic << endl;
+		  	cout << "Phone number: " << phone_num << endl;
+		  	cout << "Address: " << address << endl;
+		  	cout << "Gender: " << gender << endl;
+		  	cout << "Customer ID: " << Customer_ID << endl;
+		  	cout << "Subscription ID: " << Subscription_ID << endl;
+		  	cout << "Email Address: " << email << endl;
+		  }
+		  
+//display data from file
+void Customer::DisplayCustomer()
+		  {
+		  		ifstream fin;
+		    	fin.open("record.txt", ios::in);
+		    	if(!fin)
+		    	{
+		    		cout << "\nFile not found" << endl;
+				}
+				else
+				{
+					fin.read((char*)this,sizeof(*this));
+					while(!fin.eof())
+					{
+						showData();
+						fin.read((char*)this,sizeof(*this));
+					}	
+				}
+		fin.close();
+		  }
+		
+//add customer
+void Customer::Add() 
+		{
+			ofstream fout;
+			fout.open("record.txt",ios::app);
+			fout.write((char*)this, sizeof(*this));
+			fout.close();
+		}
+		
+//delete data
+void Customer::deleteRecord(int i)
+{
+	ifstream fin;
+	ofstream fout;
+	fin.open("record.txt",ios::in|ios::binary);
+	if(!fin)
+	{
+		cout<<"File Not Found !"<<endl;
+	}
+	else
+	{
+		getch();
+		fout.open("temp.txt",ios::out);
+		fin.read((char*)this,sizeof(*this));
+		while(!fin.eof())
+		{
+			if(i!=cnic)
+			{
+				fout.write((char*)this,sizeof(*this));
+			}
+			fin.read((char*)this,sizeof(*this));
+		}
+		fin.close();
+		fout.close();
+		getch();
+		remove("record.txt");
+		getch();
+		rename("temp.txt","record.txt");
+	}
+}
+
+//searchCustomer
+int Customer::search(long int i)
+			{
+				bool flag = true;
+				int count=0;
+				ifstream fin;
+				fin.open("record.txt", ios::in);
+				if(!fin)
+		    	{
+		    		cout << "\nFile not found" << endl;
+				}
+			else
+			{
+				fin.read((char*)this,sizeof(*this));
+				while(!fin.eof())
+				{
+					if(i==cnic)
+					{
+						showData();
+						count++;
+					}
+					fin.read((char*)this,sizeof(*this));
+				}	
+			}
+			if(flag == false)
+			{
+				cout << "No such record" << endl;
+			}
+			fin.close();
+
+		}
+		
+//updateData	
+void Customer::updateRecord(int i)
+{
+	fstream file;
+	file.open("record.txt", ios::in|ios :: out| ios::ate);
+	file.seekg(0);
+	file.read((char*)this,sizeof(*this));
+	while(!file.eof())
+	{
+		if(i==cnic)
+		{  
+		    InputData();
+			file.seekp(file.tellp()-sizeof(*this));
+			file.write((char*)this,sizeof(*this));
+		}
+		file.read((char*)this,sizeof(*this));
+	}
+}	
+
+int Customer::TotalRecords()
+{
+			int i=0;
+		    	ifstream fin;
+		    	fin.open("record.txt", ios::in);
+		    	if(!fin)
+		    	{
+		    		cout << "\nFile not found" << endl;
+				}
+				else
+				{
+					fin.read((char*)this,sizeof(*this));
+					while(!fin.eof())
+					{
+						i++;
+						fin.read((char*)this,sizeof(*this));
+					}	
+					
+				}
+				
+				cout << "Total records: " << i << endl;
+				fin.close();
+				return i;
+}	
+	
+		
+
+//for room management
+class RoomManagement: public Customer
+{
+	private:
+		int room_no;
+		
+	public:
+	
+	void output();
+	void AddCustomer();
+	void ViewCustomer();
+	void rooms();
+	void edit();
+	int check(int);
+	void bill(int);
+	void finalroommain();
+	
+};
+
+//to check the room status
+int RoomManagement::check(int r)
+{
+
+int flag=0;
+
+ifstream fin("record.txt",ios::in);
+
+while(!fin.eof())
+{
+
+fin.read((char*)this,sizeof(*this));
+if(room_no==r)
+{
+
+flag=1;
+break;
+
+}
+
+}
+
+fin.close();
+return(flag);
+
+}
+
+
+void RoomManagement::AddCustomer()
+{
+	int r,flag;
+	ofstream fout("record.txt",ios::app);
+	cout<<"\n------ROOMS DETALS------\n";
+	cout<<"Total no.of rooms in this hotel are: 50\n";
+	cout<<"(1).Simple rooms(with 1 bed): 1-15\n(2).Simple rooms(with 2 beds): 16-30\n(3).Luxury rooms:31-45\n(4).Royal suites: 46-50 \n";
+	cout<<"Enter the number of room you would like to stay in: ";
+	cin>>r;
+	
+	flag=check(r);
+	if(flag)
+	{
+		cout<<"\nSORRY! The room is already booked.";
+	}
+	else
+	{
+		room_no=r;
+	    Customer:: InputData();
+	    Customer:: Add();
+		cout<<"/n...Room is booked...\n";
+	}
+	cout<<"\n Press any key to continue.....!!";
+    getch();
+	fout.close();
+}
+
+//for viewing particular customer
+void RoomManagement::ViewCustomer()
+{
+	ifstream fin("record.txt",ios::in);
+	long int c;
+	int flag;
+	cout<<"\nEnter the Cnic for the customer details: ";
+	cin>>c;
+	while(!fin.eof())
+{
+
+fin.read((char*)this,sizeof(*this));
+if(cnic==c)
+{
+cout<<"\n Customer Details";
+cout<<"\n ----------------\n"; 
+ Customer::search(c);
+flag=1;
+break;
+
+}
+
+}
+
+if(flag==0)
+cout<<"\n Sorry No such CNIC found....!!";
+cout<<"\n\n Press any key to continue....!!";
+getch();
+fin.close();
+}
+
+//to display alotted rooms
+void RoomManagement::rooms()
+{
+ifstream fin("record.txt",ios::in);
+cout<<"\n\t\t\t    List Of Rooms Allotted";
+cout<<"\n\t\t\t    ----------------------";
+cout<<"\n\n Room No.\tCNIC\t\tName\t\tAddress\t\t\tPhone No.\t\tGender\t\tEmail Address\n";
+
+while(!fin.eof())
+{
+
+fin.read((char*)this,sizeof(*this));
+cout<<"\n\n "<<room_no<<"\t\t"<<cnic<<"\t\t"<<name;
+cout<<"\t\t"<<address<<"\t\t"<<phone_num<<"\t\t"<<gender<<"\t\t"<<email;
+
+}
+cout<<"\n\n\n\t\t\tPress any key to continue.....!!";
+getch();
+fin.close();
+}
+
+
+//to edit customer record
+void RoomManagement::edit()
+{
+
+  system("cls");
+
+int choice,r;
+long int c;
+cout<<"\n EDIT MENU";
+cout<<"\n ---------";
+cout<<"\n\n 1.Modify Customer Record";
+cout<<"\n 2.Delete Customer Record";
+cout<<"\n 3. Bill Of Customer";
+cout<<"\n Enter your choice: ";
+
+cin>>choice;
+  system("cls");
+
+
+
+switch(choice)
+{
+
+case 1:	
+cout<<"\n Enter the CNIC: " ;
+cin>>c;
+Customer::updateRecord(c);
+break;
+
+case 2:	
+cout<<"\n Enter the CNIC: " ;
+cin>>c;
+cin.ignore();
+Customer::deleteRecord(c);
+break;
+
+case 3:
+cout<<"\n Enter the Room no: " ;
+cin>>r; 
+int ch, num, pin;
+	cout << "1. Cash\n2. Credit Card" << endl;
+	cin >> ch;
+	switch(ch)
+	{
+		case 1:
+			{
+				bill(r);
+				break;
+			}
+		
+		case 2:
+			{
+				cout << "Credit Card Number: ";
+				cin >>num;
+				cout << endl;
+				cout << "Enter Pin: ";
+				cin >> pin;
+				cout << endl;
+                bill(r);
+				break;				
+			}
+	}
+break;
+
+default: cout<<"\n Wrong Choice.....!!";
+
+}
+
+}
+
+
+
+//FUNCTION FOR CUSTOMER`S BILL
+
+void RoomManagement::bill(int r)
+{
+
+RoomManagement r1;
+ifstream f1;
+ f1.open("record.txt",ios::in|ios::binary);
+
+if(!f1)
+ cout<<"cannot open";
+
+ else
+ {
+
+  f1.read((char*)&r1,sizeof (RoomManagement));
+  while(f1)
+
+  {
+
+  f1.read((char*)&r1,sizeof (RoomManagement));
+
+  }
+
+  if (r1.room_no == r)
+  {
+
+  if(r1.room_no>=1&&r1.room_no<=30)
+  cout<<"your bill = 2000";
+
+  else if (r1.room_no>=35&&r1.room_no<=45)
+  cout<<"your bill = 5000" ;
+
+  else
+  cout<<"your bill = 7000";
+
+  }
+
+  else
+  { cout<<"room no. not found";}
+
+  }
+
+  f1.close();
+  getch();
+
+}
+
+//END OF BILLING FUNCTION
+
+//START OF MAIN PROGARM
+
+void RoomManagement:: finalroommain()
+{
+
+RoomManagement r1;
+  system("cls");
+
+cout<<"\n\t\t\t****************************";
+cout<<"\n\t\t\t* HOTEL MANAGEMENT PROJECT *";
+cout<<"\n\t\t\t****************************";
+int choice;
+while(choice!=5)
+{
+
+  system("cls");
+cout<<"\n\t\t\t\t*************************";
+cout<<"\n\t\t\t\t SIMPLE HOTEL MANAGEMENT ";
+cout<<"\n\t\t\t\t      * MAIN MENU *";
+cout<<"\n\t\t\t\t*************************";
+cout<<"\n\n\n\t\t\t1.Book A Room";
+cout<<"\n\t\t\t2.Customer Records";
+cout<<"\n\t\t\t3.Rooms Allotted";
+cout<<"\n\t\t\t4.Edit Record";
+cout<<"\n\t\t\t5.Exit";
+cout<<"\n\n\t\t\tEnter Your Choice: ";
+cin>>choice;
+
+switch(choice)
+{
+
+case 1:	
+{
+r1.AddCustomer();
+break;	
+}
+
+case 2: r1.ViewCustomer();
+break;
+
+case 3: r1.rooms();
+break;
+
+case 4:	r1.edit();
+break;
+
+case 5: break;
+
+default:
+{
+
+cout<<"\n\n\t\t\tWrong choice.....!!!";
+cout<<"\n\t\t\tPress any key to   continue....!!";
+getch();
+
+}
+
+}
+
+}
+}
+
+
+//Class **** R E S T A U R A N T *****
+class Restaurant
+{
+	private:
+		
+	char dish[50];
+	char description[200];
+    int key;
+    float price;
+    
+    public:
+	//******************************************** M E N U   E D I T   F U N C T I O N S ********************************************//
+void FileAdd() 
+		{
+			ofstream fout;
+			fout.open("Menu.txt",ios::app);
+			fout.write((char*)this, sizeof(*this));
+			fout.close();
+		}
+		
+void MenuAdd()
+    	{
+    		cout << "*** N E W   D I S H ***" << endl;
+    		cout << "Dish Name: ";
+    		cin.ignore();
+    		cin.getline(dish,49);
+    		cout << endl;
+    		cout << "Description: ";
+    		cin.ignore();
+    		cin.getline(description,199);
+    		cout << endl;
+    		cout << "Key: ";
+    		cin >> key;
+    		cout << endl;
+    		cout << "Price: $ ";
+    		cin >> price;
+    		cout << endl;
+			FileAdd();	
+		}
+		
+void ShowDish()
+	{		cout << "Dish Name: " << dish << endl;
+    		
+    		cout << "Description: " << description << endl;
+    		
+    		cout << "Key: " << key << endl;
+    	
+    		cout << "Price: $ " << price << endl;
+    		
+	}
+		
+void FileOrder() 
+		{
+			ofstream fout;
+			fout.open("CustomerOrder.txt",ios::app);
+			fout.write((char*)this, sizeof(*this));
+			fout.close();
+		}
+				
+bool CheckDish(int k)
+    {
+    	bool flag = false;
+				ifstream fin;
+				fin.open("Menu.txt", ios::in);
+				if(!fin)
+		    	{
+		    		cout << "\nFile not found" << endl;
+				}
+			else
+			{
+				fin.read((char*)this,sizeof(*this));
+				while(!fin.eof())
+				{
+					if(k==key)
+					ShowDish();
+					fin.read((char*)this,sizeof(*this));
+					return true;
+				}	
+			}
+			if(flag == false)
+			{
+				cout << "No such record" << endl;
+				return false;
+			}
+			fin.close();
+	}
+	
+void DisplayMenu()
+	{
+		ifstream fin;
+		    	fin.open("Menu.txt", ios::in);
+		    	if(!fin)
+		    	{
+		    		cout << "\nFile not found" << endl;
+				}
+				else
+				{
+					fin.read((char*)this,sizeof(*this));
+					while(!fin.eof())
+					{
+						ShowDish();
+
+						fin.read((char*)this,sizeof(*this));
+					}	
+					
+				}
+				fin.close();
+	}
+	
+void UpdateMenu(int k)
+		{
+			fstream file;
+			file.open("Menu.txt", ios::in|ios :: out| ios::ate);
+			file.seekg(0);
+			file.read((char*)this,sizeof(*this));
+			while(!file.eof())
+			{
+				if(k == key)
+			{  
+		    MenuAdd();
+			file.seekp(file.tellp()-sizeof(*this));
+			file.write((char*)this,sizeof(*this));
+			}
+			file.read((char*)this,sizeof(*this));
+	}
+}
+
+// ****************************************** C U S T O M E R   O R D E R   F U N C T I O N S ******************************************//
+void NewOrder()
+		{
+		   int k;
+	       cout << "*** N E W   O R D E R ***" << endl;
+	       cout << "Enter key: ";
+	       cin >> k;
+	       if (CheckDish(k) == true)
+		   {
+	       	FileOrder();   
+		   } 
+		   
+		   else
+		   {
+		   	  return NewOrder();
+		   } 
+		}
+
+		void CancelOrder(int k)
+		{
+			ifstream fin;
+			ofstream fout;
+			fin.open("CustomerOrder.txt",ios::in);
+			if(!fin)
+			{
+				cout<<"File Not Found !"<<endl;
+			}
+			else
+			{
+				fout.open("tempStudents.txt",ios::out);
+				fin.read((char*)this,sizeof(*this));
+				while(!fin.eof())
+				{
+						if(k == key)
+				{
+					fout.write((char*)this,sizeof(*this));
+				}
+					fin.read((char*)this,sizeof(*this));
+				}
+				fin.close();
+				fout.close();
+				remove("CustomerOrder.txt");
+				rename("tempOrder.txt","CustomerOrder.txt");
+			}
+		}
+		
+void UpdateOrder(int k)
+{
+	        fstream file;
+			file.open("CustomerOrder.txt", ios::in|ios :: out| ios::ate);
+			file.seekg(0);
+			file.read((char*)this,sizeof(*this));
+			while(!file.eof())
+			{
+				if(k == key)
+			{  
+		    NewOrder();
+			file.seekp(file.tellp()-sizeof(*this));
+			file.write((char*)this,sizeof(*this));
+			}
+			file.read((char*)this,sizeof(*this));
+}
+}
+		
+
+void GenerateBill()
+{
+	float total;
+	ifstream fin;
+	fin.open("CustomerOrder.txt", ios::in|ios :: out);
+	fin.read((char*)this,sizeof(*this));
+	while(!fin.eof())
+	{
+		total+=price;
+		fin.read((char*)this,sizeof(*this));
+	}
+	fin.close();	
+	cout << "Total Payment : " << total << endl;
+
+}
+void PaymentType()
+{
+	int ch, num, pin;
+	cout << "1. Cash\n2. Credit Card" << endl;
+	cin >> ch;
+	switch(ch)
+	{
+		case 1:
+			{
+				GenerateBill();
+				break;
+			}
+		
+		case 2:
+			{
+				cout << "Credit Card Number: ";
+				cin >>num;
+				cout << endl;
+				cout << "Enter Pin: ";
+				cin >> pin;
+				cout << endl;
+				GenerateBill();
+				
+			}
+	}
+	
+}
+
+void MainEditMenu()
+{
+	int ch,k;
+	cout <<"*** E D I T   M E N U ***" << endl;
+	cout << "1. Add New Dish in Menu\n2. Display Menu\n3. Update Menu\n0. Exit" << endl;
+	cin >> ch;
+	switch(ch)
+	{
+		case 1:
+			{
+				MenuAdd();
+				ShowDish();
+				break;
+			}
+		
+		case 2:
+			{
+				DisplayMenu();
+				break;
+			}
+			
+		case 3:
+			{
+				cout << "*** C U R R E N T   M E N U ***" << endl;
+				DisplayMenu();
+				cout << "Enter Dish Key you want to Update: ";
+				cin >> k;
+				UpdateMenu(k);
+				break;	
+			}
+			
+		case 0:
+			{
+				break;
+			}
+}
+}
+
+void CustomerOrder()
+{
+	int ch,ans,k;
+	cout <<"*** C U S T O M E R  O R D E R ***" << endl;
+	cout << "1. Add Order\n2. Delete Order\n3. Update Order\n4. Generate Bil\n0. Exit" << endl;
+	cin >> ch;
+	switch(ch)
+	{
+	case 1:
+		{
+			NewOrder();
+			break;
+		}
+		
+	case 2:
+		{
+			cout << "Do you want to delete the complete order?\n1. Yes\n2. No" << endl;
+			cin >> ans;
+			if(ans==1)
+			{
+				remove("CustomerOrder.txt");
+			}
+			
+			else if(ans==2)
+			{
+				cout << " Enter key of the Dish to be removed from the order: ";
+				cin >>k;
+				CancelOrder(k);	
+			}
+			
+		break;	
+		}
+		
+	case 3:
+		{
+			cout << " Enter key of the Dish to be replaced: ";
+		    cin >>k;
+			UpdateOrder(k);
+			break;
+		}
+		
+	case 4:
+		{
+			PaymentType();
+			break;
+		}
+		
+	case 0:
+		{
+			break;
+		}
+	}
+			
+}
+
+
+void finalrestaurantmain()
+{
+	int i,opt;
+	Restaurant I[5];
+	cout << "Initially the file is empty please enter test data" << endl;
+	for(i=0;i<2;i++)
+	{
+	cout << "******** S E L E C T ********" << endl;
+	cout << "1. Edit Menu\n2. Customer Order" << endl;
+	cin >> opt;
+	switch(opt)
+	{
+		case 1:
+				{
+					I[i].MainEditMenu();
+					break;
+				}
+				
+		case 2:
+				{
+					I[i].CustomerOrder();
+					break;
+				}
+	}
+		
+	}
+
+
+}
+};
+//Room Service 
+class RoomService:public Restaurant
+{
+	char complain[100];
+	public:
+		void orderFood()
+		{
+			 CustomerOrder();
+		}
+	
+		void help()
+		{
+			cout<<"\n***Please enter your complain***\n\n";
+			cin.ignore();
+			cin.getline(complain,99);
+			cout<<"\n-----Thankyou for informing.Your complain has been registered and will be solved soon-----\n";
+		}
+		
+};
+
+int main()
+{
+	RoomManagement rm;
+	rm.finalroommain();
+	Restaurant rst;
+	rst.finalrestaurantmain();
+	
+	
+}
+
+//END OF MAIN PROGRAM
+*// G Y M Class
 class Gym:public Customer{
 	int customer_id;
 	int trainerId;
