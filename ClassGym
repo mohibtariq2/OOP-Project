@@ -473,19 +473,10 @@ void RoomManagement:: finalroommain()
 
 RoomManagement r1;
   system("cls");
-
-cout<<"\n\t\t\t****************************";
-cout<<"\n\t\t\t* HOTEL MANAGEMENT PROJECT *";
-cout<<"\n\t\t\t****************************";
 int choice;
 while(choice!=5)
 {
 
-  system("cls");
-cout<<"\n\t\t\t\t*************************";
-cout<<"\n\t\t\t\t SIMPLE HOTEL MANAGEMENT ";
-cout<<"\n\t\t\t\t      * MAIN MENU *";
-cout<<"\n\t\t\t\t*************************";
 cout<<"\n\n\n\t\t\t1.Book A Room";
 cout<<"\n\t\t\t2.Customer Records";
 cout<<"\n\t\t\t3.Rooms Allotted";
@@ -857,7 +848,7 @@ void CustomerOrder()
 			
 }
 
-
+//the function to be called in main
 void finalrestaurantmain()
 {
 	int i,opt;
@@ -888,6 +879,7 @@ void finalrestaurantmain()
 
 }
 };
+
 //Room Service 
 class RoomService:public Restaurant
 {
@@ -906,21 +898,44 @@ class RoomService:public Restaurant
 			cout<<"\n-----Thankyou for informing.Your complain has been registered and will be solved soon-----\n";
 		}
 		
+		void finalservicemain()
+		{
+		       int ch;
+				cout<<"Select:\n1.Order Food\n2.Complain\n3.Exit\n";
+				cin>>ch;
+			while(ch!=3)
+			{
+				switch(ch)
+				{
+					case 1:
+						orderFood();
+						break;
+					case 2:
+						help();
+						break;
+						
+					case 3:
+						break;
+					
+					default:
+						{
+					
+						 cout<<"\n\n\t\t\tWrong choice.....!!!";
+                  cout<<"\n\t\t\tPress any key to   continue....!!";
+                  getch();
+              }
+						
+				}
+			}
+		}
+		
 };
 
-int main()
-{
-	RoomManagement rm;
-	rm.finalroommain();
-	Restaurant rst;
-	rst.finalrestaurantmain();
-	
-	
-}
 
 //END OF MAIN PROGRAM
-*// G Y M Class
-class Gym:public Customer{
+// G Y M Class
+class Gym:public Customer
+{
 	int customer_id;
 	int trainerId;
 	char trainer_name[20];
@@ -1331,7 +1346,7 @@ void showPlanData()
     	cin>>payment_time;
     	
     	cout<<"Enter Customer ID :"<<endl;
-    	cin>>Customer_id;
+    	cin>>customer_id;
     	
     	cout<<"Enter Status of Payment (Paid-P Unpaid-N)"<<endl;
     	cin>>payment_status;
@@ -1357,7 +1372,7 @@ void showPlanData()
     	ifstream fin;
     	fin.open("Subscriptions.txt",ios::in);
     	
-    	if(cid=Customer_id)
+    	if(cid=customer_id)
     	{
     		status=payment_status;
     		if(status=='P')
@@ -1378,14 +1393,7 @@ void showPlanData()
     	
 	}
 	
-	
-	
-	
-};
-
-
-
-int main()
+void gym_finalmain()
 {
 	
 	Gym g1;
@@ -1506,9 +1514,111 @@ int main()
 	
 	
 	
-}while(choice!=20);
-	
-	
-	
-	
 }
+while(choice!=20);
+}
+};
+	
+int main()
+{
+		RoomManagement rm;
+		RoomService rs;
+		Restaurant rst;
+		Gym g;
+	int ch;
+cout<<"\n\t\t\t****************************";
+cout<<"\n\t\t\t* RESORT MANAGEMENT PROJECT *";
+cout<<"\n\t\t\t****************************";
+  system("cls");
+cout<<"\n\t\t\t\t*************************";
+cout<<"\n\t\t\t\t RESORT MANAGEMENT SYSTEM ";
+cout<<"\n\t\t\t\t      * MAIN MENU *";
+cout<<"\n\t\t\t\t*************************";
+
+cout<<"\nPlease Select\n1. ADMIN\n2.CUSTOMER\n3.EXIT\n";
+cin>>ch;
+while(ch!=3)
+{
+switch(ch)
+
+{
+	case 1:
+		int op;
+			cout<<"Select:\n1. View Room Management\n2.View Restaurant Management\n3.View Gym Management\n4.Exit\n ";
+		    cin>>op;
+		    while(op!=4)
+		{
+		    switch(op)
+		    {
+		    	case 1: 
+		    		rm.finalroommain();
+                    break;
+                case 2:
+                		rst.finalrestaurantmain();
+                      break;
+                case 3:
+                	g.gym_finalmain();
+                	break;
+                
+                case 4: 
+				break;
+
+                default:
+                {
+                  cout<<"\n\n\t\t\tWrong choice.....!!!";
+                  cout<<"\n\t\t\tPress any key to   continue....!!";
+                  getch();
+
+                }
+
+            }
+        } 
+		break;
+        
+        case 2:
+        	int opt;
+	     cout<<"Select:\n1.Room Service\n2.Restaurant Service\n3.Gym\n4.View membership status\n5.Profile\n6.Visits?Check-ins\n7.Exit\n ";
+		    cin>>opt;
+		    while(opt!=7)
+		{
+			
+		    switch(opt)
+		    {
+		    	case 1: 
+		    		rs.finalservicemain();
+                    break;
+                case 2:
+                		rst.finalrestaurantmain();
+                      break;
+                case 3:
+                	g.gym_finalmain();
+                	break;
+                
+                case 4: break;
+
+                default:
+                {
+                  cout<<"\n\n\t\t\tWrong choice.....!!!";
+                  cout<<"\n\t\t\tPress any key to   continue....!!";
+                  getch();
+
+                }
+
+            }
+        } break;
+        
+        case 3:
+        	break;
+        
+        default:
+        	{
+        		 cout<<"\n\n\t\t\tWrong choice.....!!!";
+                  cout<<"\n\t\t\tPress any key to   continue....!!";
+                  getch();
+			}
+     	}
+
+}		
+}
+		
+	
